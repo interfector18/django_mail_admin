@@ -325,7 +325,8 @@ class OutgoingEmailAdmin(admin.ModelAdmin):
         form = super(OutgoingEmailAdmin, self).get_form(request, obj, **kwargs)
         configurations = Outbox.objects.filter(active=True)
         if not (len(configurations) > 1 or len(configurations) == 0):
-            form.base_fields['from_email'].initial = configurations.first().email_host_user
+            if 'from_email' in form.base_fields:
+                form.base_fields['from_email'].initial = configurations.first().email_host_user
         return form
 
     def save_model(self, request, obj, form, change):
